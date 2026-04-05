@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/marks")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin(origins = "*")
 public class MarkController {
 
     private final MarkRepository markRepository;
