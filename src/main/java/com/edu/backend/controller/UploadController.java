@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/upload")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin(origins = "*")
 public class UploadController {
 
     private final String UPLOAD_DIR = "uploads/";
@@ -33,10 +33,21 @@ public class UploadController {
             Path path = Paths.get(UPLOAD_DIR + fileName);
             Files.write(path, file.getBytes());
 
+            // Get current backend URL from environment or fallback
+            String backendUrl = System.getenv("BACKEND_URL");
+            if (backendUrl == null || backendUrl.isEmpty()) {
+                backendUrl = "https://fsad-backend-1-ca45.onrender.com"; // Your Render Backend URL
+            }
+            // Remove trailing slash if present
+            if (backendUrl.endsWith("/")) {
+                backendUrl = backendUrl.substring(0, backendUrl.length() - 1);
+            }
+
             Map<String, String> response = new HashMap<>();
-            response.put("url", "http://localhost:8081/api/upload/files/" + fileName);
+            response.put("url", backendUrl + "/api/upload/files/" + fileName);
             return ResponseEntity.ok(response);
         } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).build();
         }
     }
