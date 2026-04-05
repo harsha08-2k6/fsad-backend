@@ -1,8 +1,10 @@
 package com.edu.backend.controller;
 
 import com.edu.backend.model.Assignment;
+import com.edu.backend.model.Submission;
 import com.edu.backend.repository.AssignmentRepository;
 import com.edu.backend.repository.ClassRepository;
+import com.edu.backend.repository.SubmissionRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +15,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/assignments")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin(origins = "*")
 public class AssignmentController {
 
     private final AssignmentRepository assignmentRepository;
     private final ClassRepository classRepository;
+    private final SubmissionRepository submissionRepository;
 
     @GetMapping
     public List<Assignment> getAllAssignments(@RequestParam(required = false) String classId) {
@@ -61,10 +64,18 @@ public class AssignmentController {
     }
 
     @DeleteMapping("/{id}")
+    @jakarta.transaction.Transactional
     public ResponseEntity<?> deleteAssignment(@PathVariable String id) {
         if (!assignmentRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+        
+        // delete all associated submissions first
+        List<Submission> submissions = submissionRepository.findByAssignmentId(id);
+        if (!submissions.isEmpty()) {
+            submissionRepository.deleteAll(submissions);
+        }
+
         assignmentRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
@@ -74,7 +85,7 @@ public class AssignmentController {
 class AssignmentCreateRequest {
     private String title;
     private String description;
-    private LocalDateTime deadline;
+    private java.time.LocalDateTime deadline;
     private String fileUrl;
     private String classId;
 }
