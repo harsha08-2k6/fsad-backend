@@ -20,7 +20,7 @@ import java.util.Map;
 @CrossOrigin(origins = "*")
 public class UploadController {
 
-    private final String UPLOAD_DIR = "uploads/";
+    private final String UPLOAD_DIR = new File("uploads").getAbsolutePath() + File.separator;
 
     @PostMapping
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -29,7 +29,9 @@ public class UploadController {
             if (!dir.exists()) {
                 dir.mkdirs();
             }
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            // Sanitize filename: replace spaces with underscores to avoid URL encoding issues
+            String originalName = file.getOriginalFilename() != null ? file.getOriginalFilename().replace(" ", "_") : "file";
+            String fileName = System.currentTimeMillis() + "_" + originalName;
             Path path = Paths.get(UPLOAD_DIR + fileName);
             Files.write(path, file.getBytes());
 
@@ -55,9 +57,12 @@ public class UploadController {
     @GetMapping("/files/{fileName:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String fileName) {
         try {
+            // Remove any unwanted characters or backtracking and look in the absolute path
             Path filePath = Paths.get(UPLOAD_DIR).resolve(fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-            if (resource.exists()) {
+            File file = filePath.toFile();
+            
+            if (file.exists() && file.isFile()) {
+                Resource resource = new UrlResource(filePath.toUri());
                 String contentType = Files.probeContentType(filePath);
                 if (contentType == null) {
                     contentType = "application/octet-stream";
@@ -67,9 +72,11 @@ public class UploadController {
                         .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);
             } else {
+                System.out.println("FILE NOT FOUND AT: " + file.getAbsolutePath());
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).build();
         }
     }
