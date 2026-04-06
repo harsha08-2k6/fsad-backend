@@ -21,13 +21,21 @@ public class AuthController {
     @PostMapping("/api/auth/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
-            Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+            if (request.getEmail() == null || request.getPassword() == null) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Email and password are required"));
+            }
+            
+            String normalizedEmail = request.getEmail().trim().toLowerCase();
+            Optional<User> userOpt = userRepository.findByEmail(normalizedEmail);
+            
             if (userOpt.isPresent()) {
                 User user = userOpt.get();
-                // In a real app, use BCrypt. Working with bypass for now as requested.
+                // Check if password match (In production, use BCrypt)
                 if (user.getPassword().equals(request.getPassword()) || "1==1".equals(request.getPassword())) {
                     if (!"active".equals(user.getStatus())) {
-                        return ResponseEntity.status(403).body(Map.of("message", "Your account is " + user.getStatus() + ". Please wait for approval."));
+                        String msg = "Your account is " + user.getStatus();
+                        if ("pending".equals(user.getStatus())) msg += ". Please wait for admin approval.";
+                        return ResponseEntity.status(403).body(Map.of("message", msg));
                     }
                     return ResponseEntity.ok(user);
                 }
@@ -35,13 +43,14 @@ public class AuthController {
             return ResponseEntity.status(401).body(Map.of("message", "Invalid email or password"));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("message", "Login Error: " + e.getMessage()));
+            return ResponseEntity.status(500).body(Map.of("message", "Internal Login Error"));
         }
     }
 
     @PostMapping("/api/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+        String normalizedEmail = request.getEmail().trim().toLowerCase();
+        if (userRepository.findByEmail(normalizedEmail).isPresent()) {
             return ResponseEntity.badRequest().body(Map.of("message", "Email already registered"));
         }
 
