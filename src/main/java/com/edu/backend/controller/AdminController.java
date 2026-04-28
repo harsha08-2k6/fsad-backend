@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -57,8 +58,22 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<Map<String, Object>> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::toUserDto)
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, Object> toUserDto(User user) {
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("id", user.getId());
+        dto.put("name", user.getName());
+        dto.put("email", user.getEmail());
+        dto.put("role", user.getRole());
+        dto.put("status", user.getStatus());
+        dto.put("classId", user.getSchoolClass() == null ? null : user.getSchoolClass().getId());
+        dto.put("teacherId", user.getTeacher() == null ? null : user.getTeacher().getId());
+        return dto;
     }
 
     @PatchMapping("/users")
@@ -78,12 +93,17 @@ public class AdminController {
     public ResponseEntity<?> deleteUser(@RequestBody Map<String, String> body) {
         String userId = body.get("userId");
         if (userId == null) return ResponseEntity.badRequest().body("userId is required");
-        
-        if (userRepository.existsById(userId)) {
+
+        return userRepository.findById(userId).map(user -> {
+            List<User> linked = userRepository.findByTeacherId(userId);
+            if (!linked.isEmpty()) {
+                linked.forEach(u -> u.setTeacher(null));
+                userRepository.saveAll(linked);
+            }
+
             userRepository.deleteById(userId);
             return ResponseEntity.ok(Map.of("message", "User deleted successfully"));
-        }
-        return ResponseEntity.notFound().build();
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/teachers/pending")
