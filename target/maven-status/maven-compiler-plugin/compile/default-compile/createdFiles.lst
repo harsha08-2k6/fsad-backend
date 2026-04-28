@@ -10,13 +10,14 @@ com\edu\backend\repository\MarkRepository.class
 com\edu\backend\controller\TopicRequest.class
 com\edu\backend\controller\AdminController$UserUpdateRequest.class
 com\edu\backend\repository\ClassRepository.class
-com\edu\backend\config\SecurityConfig.class
 com\edu\backend\controller\AuthController.class
 com\edu\backend\repository\TopicRepository.class
 com\edu\backend\controller\SubmissionController.class
 com\edu\backend\repository\AnnouncementRepository.class
+com\edu\backend\service\EmailService.class
 com\edu\backend\controller\AssignmentController.class
 com\edu\backend\controller\StudentController.class
+com\edu\backend\controller\ResetPasswordRequest.class
 com\edu\backend\controller\TeacherController.class
 com\edu\backend\model\Topic.class
 com\edu\backend\controller\SubmissionRequest.class
@@ -25,11 +26,14 @@ com\edu\backend\model\Submission.class
 com\edu\backend\controller\GradeRequest.class
 com\edu\backend\model\SchoolClass.class
 com\edu\backend\model\Announcement.class
+com\edu\backend\repository\PasswordResetTokenRepository.class
 com\edu\backend\model\Mark.class
 com\edu\backend\model\Subject.class
+com\edu\backend\controller\ForgotPasswordRequest.class
 com\edu\backend\repository\UserRepository.class
 com\edu\backend\repository\SubmissionRepository.class
 com\edu\backend\controller\CodeRequest.class
+com\edu\backend\controller\VerifyOtpRequest.class
 com\edu\backend\controller\AnnouncementRequest.class
 com\edu\backend\model\User.class
 com\edu\backend\controller\MarkController.class
@@ -40,4 +44,5 @@ com\edu\backend\controller\ClassController.class
 com\edu\backend\controller\LoginRequest.class
 com\edu\backend\controller\RegisterRequest.class
 com\edu\backend\BackendApplication.class
+com\edu\backend\model\PasswordResetToken.class
 com\edu\backend\model\Assignment.class

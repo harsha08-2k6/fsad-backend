@@ -87,6 +87,14 @@ CREATE TABLE IF NOT EXISTS `mark` (
     FOREIGN KEY (`subject_id`) REFERENCES `subject`(`id`) ON DELETE CASCADE
 );
 
+-- 9b. Password Reset Token Table
+CREATE TABLE IF NOT EXISTS `password_reset_token` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `email` VARCHAR(255) NOT NULL,
+    `otp` VARCHAR(10) NOT NULL,
+    `expiry_time` DATETIME NOT NULL
+);
+
 -- 10. Insert Admin User (Password is 'admin')
 INSERT IGNORE INTO `User` (`id`, `name`, `email`, `password`, `role`, `status`) 
 VALUES (UUID(), 'Administrator', 'admin@gmail.com', 'admin', 'admin', 'active');

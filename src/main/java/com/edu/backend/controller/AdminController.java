@@ -2,6 +2,7 @@ package com.edu.backend.controller;
 
 import com.edu.backend.model.*;
 import com.edu.backend.repository.*;
+import com.edu.backend.service.EmailService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class AdminController {
     private final SubjectRepository subjectRepository;
     private final AssignmentRepository assignmentRepository;
     private final AnnouncementRepository announcementRepository;
+    private final EmailService emailService;
 
     @GetMapping("/stats")
     public ResponseEntity<?> getAdminStats() {
@@ -103,7 +105,12 @@ public class AdminController {
         String userId = body.get("userId");
         return userRepository.findById(userId).map(user -> {
             user.setStatus("active");
-            userRepository.save(user);
+            User saved = userRepository.save(user);
+            try {
+                emailService.sendApprovalMail(saved.getEmail(), saved.getRole(), saved.getPassword());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return ResponseEntity.ok(Map.of("message", "User approved successfully"));
         }).orElse(ResponseEntity.notFound().build());
     }

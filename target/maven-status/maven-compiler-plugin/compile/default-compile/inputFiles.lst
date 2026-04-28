@@ -1,6 +1,5 @@
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\BackendApplication.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\config\CorsConfig.java
-C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\config\SecurityConfig.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\controller\AdminController.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\controller\AnnouncementController.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\controller\AssignmentController.java
@@ -18,6 +17,7 @@ C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\ja
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\model\Announcement.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\model\Assignment.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\model\Mark.java
+C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\model\PasswordResetToken.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\model\Question.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\model\Quiz.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\model\SchoolClass.java
@@ -29,8 +29,10 @@ C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\ja
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\repository\AssignmentRepository.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\repository\ClassRepository.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\repository\MarkRepository.java
+C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\repository\PasswordResetTokenRepository.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\repository\QuizRepository.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\repository\SubjectRepository.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\repository\SubmissionRepository.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\repository\TopicRepository.java
 C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\repository\UserRepository.java
+C:\Users\91965\Desktop\Educational-Platform\fsad-previewcode\backend\src\main\java\com\edu\backend\service\EmailService.java

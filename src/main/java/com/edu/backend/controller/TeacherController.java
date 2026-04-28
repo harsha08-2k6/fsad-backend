@@ -2,6 +2,7 @@ package com.edu.backend.controller;
 
 import com.edu.backend.model.User;
 import com.edu.backend.repository.UserRepository;
+import com.edu.backend.service.EmailService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class TeacherController {
 
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
     @GetMapping("/api/teacher/students/pending")
     public ResponseEntity<?> getPendingStudents() {
@@ -31,7 +33,9 @@ public class TeacherController {
     public ResponseEntity<?> approveStudent(@PathVariable String id) {
         return userRepository.findById(id).map(student -> {
             student.setStatus("active");
-            return ResponseEntity.ok(userRepository.save(student));
+            User saved = userRepository.save(student);
+            sendApprovalEmail(saved);
+            return ResponseEntity.ok(saved);
         }).orElse(ResponseEntity.notFound().build());
     }
 
@@ -39,7 +43,9 @@ public class TeacherController {
     public ResponseEntity<?> rejectStudent(@PathVariable String id) {
         return userRepository.findById(id).map(student -> {
             student.setStatus("rejected");
-            return ResponseEntity.ok(userRepository.save(student));
+            User saved = userRepository.save(student);
+            sendRejectionEmail(saved);
+            return ResponseEntity.ok(saved);
         }).orElse(ResponseEntity.notFound().build());
     }
 
@@ -58,8 +64,10 @@ public class TeacherController {
             return userRepository.findById(userId).map(user -> {
                 if ("approve".equals(action)) {
                     user.setStatus("active");
+                    sendApprovalEmail(user);
                 } else if ("reject".equals(action)) {
                     user.setStatus("rejected");
+                    sendRejectionEmail(user);
                 }
                 User saved = userRepository.save(user);
                 Map<String, Object> response = new HashMap<>();
@@ -71,6 +79,22 @@ public class TeacherController {
             java.io.StringWriter sw = new java.io.StringWriter();
             e.printStackTrace(new java.io.PrintWriter(sw));
             return ResponseEntity.status(500).body(sw.toString());
+        }
+    }
+
+    private void sendApprovalEmail(User user) {
+        try {
+            emailService.sendApprovalMail(user.getEmail(), user.getRole(), user.getPassword());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendRejectionEmail(User user) {
+        try {
+            emailService.sendRejectionMail(user.getEmail(), user.getRole());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
